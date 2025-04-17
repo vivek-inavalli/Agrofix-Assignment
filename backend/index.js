@@ -1,10 +1,34 @@
 const express = require("express");
-const app = express();
+const { PrismaClient } = require("@prisma/client");
 
-app.get("/", (req, res) => {
-  res.send({ msg: "yoo from server" });
+const prisma = new PrismaClient();
+const app = express();
+const PORT = 3000;
+app.use(express.json());
+
+app.post("/products", async (req, res) => {
+  try {
+    const { name, price, type } = req.body;
+    const product = await prisma.product.create({
+      data: { name, price, type },
+    });
+    res.status(201).json(product);
+  } catch (err) {
+    console.error("Error creating product:", err);
+    res.status(500).json({ error: "Could not create product" });
+  }
 });
 
-app.listen(3000, () => {
-  console.log("server has started at http://localhost:3000");
+app.get("/products", async (req, res) => {
+  try {
+    const getProduct = await prisma.product.findMany();
+    res.status(200).json(getProduct);
+  } catch (err) {
+    console.error("Error creating product:", err);
+    res.status(500).json({ error: "Could not create product" });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
