@@ -8,32 +8,37 @@ datasource db {
 }
 
 model Product {
-  id    Int     @id @default(autoincrement())
-  name  String
-  price Decimal @db.Decimal(10, 2)
-  type  String  
+  id     String   @id @default(uuid())
+  name   String
+  price  Decimal  @db.Decimal(10, 2)
+  type   String
+  imgUrl String
 }
 
 model Buyer {
-  id              Int     @id @default(autoincrement())
+  id              String   @id @default(uuid())
   name            String
-  contact         String
+  contact         String   @unique
   deliveryAddress String
+  password        String
   orders          Order[]
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
-  buyerId    Int
+  id         String      @id @default(uuid())
+  buyerId    String
+  productId  String
   buyer      Buyer       @relation(fields: [buyerId], references: [id])
-  items      Json        
+  items      Json
   status     OrderStatus @default(PENDING)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
 }
+
 model Admin {
-  id       Int    @id @default(autoincrement())
-  username String @unique
+  id       String   @id @default(uuid())
+  name     String
+  email    String   @unique
   password String
 }
 
