@@ -8,7 +8,7 @@ const BuyerOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("/api/orders"); // Replace with actual endpoint
+        const response = await axios.get("http://localhost:3000/api/orders"); // Replace with actual endpoint
         setOrders(response.data);
       } catch (err) {
         setError("Failed to fetch orders.");

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import axios from "axios";
 
 const OrderDetail = () => {
   const { id } = useParams();
@@ -13,13 +14,10 @@ const OrderDetail = () => {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const response = await fetch(`/api/orders/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch order");
-        }
-
-        const data = await response.json();
-        setOrder(data);
+        const response = await axios.get(
+          `http://localhost:3000/api/orders/${id}`
+        );
+        setOrder(response.data);
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -52,7 +50,6 @@ const OrderDetail = () => {
     );
   }
 
-  // Ensure buyer can only see their own orders
   if (buyer && order.buyerId !== buyer.id) {
     return (
       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
+import axios from "axios";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -15,11 +16,8 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch("http://localhost:30000/api/products");
-        if (!response.ok) throw new Error("Failed to fetch products");
-
-        const data = await response.json();
-        const foundProduct = data.find((p) => p.id === Number(id));
+        const response = await axios.get("http://localhost:3000/api/products");
+        const foundProduct = response.data.find((p) => p.id === Number(id));
 
         if (foundProduct) {
           setProduct(foundProduct);

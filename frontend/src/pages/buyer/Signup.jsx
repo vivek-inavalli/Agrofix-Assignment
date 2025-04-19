@@ -48,7 +48,7 @@ const BuyerSignup = () => {
 
     try {
       await buyerSignup({ name, contact, deliveryAddress, password });
-      navigate("http://localhost:3000/buyer/login", {
+      navigate("http://localhost:3000/api/buyer/login", {
         state: { message: "Account created successfully. Please login." },
       });
     } catch (err) {

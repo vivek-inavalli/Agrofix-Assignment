@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 import ProductCard from "../components/ProductCard";
 
 const Home = () => {
@@ -10,11 +11,8 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/api/products");
-        if (!response.ok) throw new Error("Failed to fetch products");
-
-        const data = await response.json();
-        const shuffled = data.sort(() => 0.5 - Math.random());
+        const response = await axios.get("http://localhost:3000/api/products");
+        const shuffled = response.data.sort(() => 0.5 - Math.random());
         setFeaturedProducts(shuffled.slice(0, 4));
         setLoading(false);
       } catch (err) {
@@ -29,7 +27,7 @@ const Home = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
       </div>
     );
   }
@@ -44,23 +42,25 @@ const Home = () => {
 
   return (
     <div>
-      <div className="bg-blue-600 text-white rounded-lg p-8 mb-8">
-        <h1 className="text-4xl font-bold mb-4">Welcome to E-Shop</h1>
+      <div className="bg-green-600 text-white rounded-lg p-8 mb-8">
+        <h1 className="text-4xl font-bold mb-4">
+          Welcome to Bulk Veggie/Fruit Shop
+        </h1>
         <p className="text-xl mb-6">
-          Discover amazing products at great prices
+          Fresh and quality products available for bulk orders
         </p>
         <Link
           to="/products"
-          className="inline-block bg-white text-blue-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100"
+          className="inline-block bg-white text-green-600 px-6 py-3 rounded-lg font-bold hover:bg-gray-100"
         >
-          Shop Now
+          Browse Products
         </Link>
       </div>
 
       <div className="mb-12">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Featured Products</h2>
-          <Link to="/products" className="text-blue-600 hover:underline">
+          <h2 className="text-2xl font-bold">Featured Vegetables & Fruits</h2>
+          <Link to="/products" className="text-green-600 hover:underline">
             View All
           </Link>
         </div>
@@ -75,25 +75,31 @@ const Home = () => {
       <div>
         <h2 className="text-2xl font-bold mb-6">Shop by Category</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="bg-gray-100 p-6 rounded-lg text-center hover:bg-gray-200">
-            <h3 className="text-xl font-bold mb-2">Electronics</h3>
-            <p className="mb-4">Latest gadgets and devices</p>
-            <Link to="/products" className="text-blue-600 hover:underline">
-              Browse Electronics
+          <div className="bg-green-100 p-6 rounded-lg text-center hover:bg-green-200">
+            <h3 className="text-xl font-bold mb-2">Vegetables</h3>
+            <p className="mb-4">Fresh and organic vegetables for bulk orders</p>
+            <Link
+              to="/products?category=vegetables"
+              className="text-green-600 hover:underline"
+            >
+              Browse Vegetables
             </Link>
           </div>
-          <div className="bg-gray-100 p-6 rounded-lg text-center hover:bg-gray-200">
-            <h3 className="text-xl font-bold mb-2">Clothing</h3>
-            <p className="mb-4">Fashionable apparel for all</p>
-            <Link to="/products" className="text-blue-600 hover:underline">
-              Browse Clothing
+          <div className="bg-green-100 p-6 rounded-lg text-center hover:bg-green-200">
+            <h3 className="text-xl font-bold mb-2">Fruits</h3>
+            <p className="mb-4">Fresh fruits available for bulk orders</p>
+            <Link
+              to="/products?category=fruits"
+              className="text-green-600 hover:underline"
+            >
+              Browse Fruits
             </Link>
           </div>
-          <div className="bg-gray-100 p-6 rounded-lg text-center hover:bg-gray-200">
-            <h3 className="text-xl font-bold mb-2">Home & Kitchen</h3>
-            <p className="mb-4">Everything for your home</p>
-            <Link to="/products" className="text-blue-600 hover:underline">
-              Browse Home & Kitchen
+          <div className="bg-green-100 p-6 rounded-lg text-center hover:bg-green-200">
+            <h3 className="text-xl font-bold mb-2">Bulk Orders</h3>
+            <p className="mb-4">Order large quantities with great discounts</p>
+            <Link to="/bulk-orders" className="text-green-600 hover:underline">
+              Place Bulk Orders
             </Link>
           </div>
         </div>

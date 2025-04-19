@@ -18,7 +18,7 @@ const BuyerLogin = () => {
     e.preventDefault();
 
     if (!contact || !password) {
-      setError("All fields are required");
+      setError("Both fields are required.");
       return;
     }
 
@@ -55,6 +55,7 @@ const BuyerLogin = () => {
               onChange={(e) => setContact(e.target.value)}
               className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your contact number"
+              required
             />
           </div>
 
@@ -66,6 +67,7 @@ const BuyerLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Enter your password"
+              required
             />
           </div>
 

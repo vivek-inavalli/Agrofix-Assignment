@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
 const prisma = new PrismaClient();
+const jwt = require("jsonwebtoken");
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -147,19 +148,29 @@ app.post("/api/buyer/login", async (req, res) => {
   try {
     const { contact, password } = req.body;
 
-    if (!contact || !password)
+    if (!contact || !password) {
       return res.status(400).json({ error: "All fields are required." });
+    }
 
-    const buyer = await prisma.buyer.findUnique({
-      where: { contact: BigInt(contact) },
+    const buyer = await prisma.buyer.findUnique({ where: { contact } });
+
+    if (!buyer) {
+      return res.status(404).json({ error: "Buyer not found." });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, buyer.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: "Invalid credentials." });
+    }
+
+    const token = jwt.sign({ id: buyer.id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
     });
 
-    if (!buyer) return res.status(404).json({ error: "Buyer not found." });
+    const { password: _, ...buyerData } = buyer;
 
-    const valid = await bcrypt.compare(password, buyer.password);
-    if (!valid) return res.status(401).json({ error: "Invalid credentials." });
-
-    res.json({ message: "Login successful", buyer });
+    res.json({ message: "Login successful", token, buyer: buyerData });
   } catch (err) {
     console.error("Error in buyer login:", err);
     res.status(500).json({ error: "Internal server error" });
@@ -215,6 +226,39 @@ app.post("/api/admin/login", async (req, res) => {
   } catch (err) {
     console.error("Error in admin login:", err);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/api/buyer/profile", async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({ error: "Unauthorized: No token provided" });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+
+    const buyer = await prisma.buyer.findUnique({
+      where: { id: decoded.id },
+      select: {
+        id: true,
+        name: true,
+        contact: true,
+        deliveryAddress: true,
+      },
+    });
+
+    if (!buyer) {
+      return res.status(404).json({ error: "Buyer not found" });
+    }
+
+    res.json({ buyer });
+  } catch (err) {
+    console.error("JWT error:", err);
+    return res.status(400).json({ error: "Invalid token" });
   }
 });
 

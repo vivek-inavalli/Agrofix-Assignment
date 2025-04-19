@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import ProductCard from "../components/ProductCard";
 
 const ProductList = () => {
@@ -15,11 +16,12 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("/api/products");
-        if (!response.ok) throw new Error("Failed to fetch products");
-
-        const data = await response.json();
-        setProducts(data);
+        const response = await axios.get("http://localhost:3000/api/products");
+        if (response.data.length === 0) {
+          setError("No products are available.");
+        } else {
+          setProducts(response.data);
+        }
         setLoading(false);
       } catch (err) {
         setError(err.message);
@@ -36,26 +38,19 @@ const ProductList = () => {
   };
 
   const filteredProducts = products.filter((product) => {
-    // Filter by type
     if (filters.type && product.type !== filters.type) return false;
-
-    // Filter by price range
     if (filters.minPrice && product.price < Number(filters.minPrice))
       return false;
     if (filters.maxPrice && product.price > Number(filters.maxPrice))
       return false;
-
-    // Filter by search term
     if (
       filters.search &&
       !product.name.toLowerCase().includes(filters.search.toLowerCase())
     )
       return false;
-
     return true;
   });
 
-  // Get unique product types for filter
   const productTypes = [...new Set(products.map((product) => product.type))];
 
   if (loading) {
@@ -69,7 +64,7 @@ const ProductList = () => {
   if (error) {
     return (
       <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-        <p>Error: {error}</p>
+        <p>{error}</p>
       </div>
     );
   }
@@ -78,7 +73,6 @@ const ProductList = () => {
     <div>
       <h1 className="text-3xl font-bold mb-6">All Products</h1>
 
-      {/* Filter Controls */}
       <div className="bg-gray-100 p-4 rounded-lg mb-6">
         <h2 className="text-xl font-bold mb-4">Filters</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -146,7 +140,6 @@ const ProductList = () => {
         </button>
       </div>
 
-      {/* Products Grid */}
       {filteredProducts.length === 0 ? (
         <div className="text-center py-12">
           <p className="text-xl text-gray-600">

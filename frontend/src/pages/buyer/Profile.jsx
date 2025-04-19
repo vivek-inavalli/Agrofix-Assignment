@@ -8,10 +8,30 @@ const BuyerProfile = () => {
   useEffect(() => {
     const fetchBuyerProfile = async () => {
       try {
-        const response = await axios.get("/api/buyer/profile"); // Replace with actual endpoint
-        setBuyer(response.data);
+        const token = localStorage.getItem("buyer");
+
+        if (!token) {
+          setError("Please log in to view your profile.");
+          return;
+        }
+
+        const response = await axios.get(
+          "http://localhost:3000/api/buyer/profile",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.data && response.data.buyer) {
+          setBuyer(response.data.buyer);
+        } else {
+          setError("Failed to fetch profile.");
+        }
       } catch (err) {
-        setError("Failed to fetch profile.");
+        setError("Failed to fetch profile. Please try again.");
+        console.log(err);
       }
     };
 
@@ -35,7 +55,7 @@ const BuyerProfile = () => {
           </p>
         </div>
       ) : (
-        <p>Loading...</p>
+        !error && <p>Loading...</p>
       )}
     </div>
   );

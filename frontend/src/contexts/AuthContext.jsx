@@ -1,4 +1,5 @@
 import { createContext, useState, useContext, useEffect } from "react";
+import axios from "axios";
 
 const AuthContext = createContext(null);
 
@@ -19,97 +20,77 @@ export const AuthProvider = ({ children }) => {
 
   const buyerLogin = async (contact, password) => {
     try {
-      const response = await fetch("http://localhost:3000/api/buyer/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ contact, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Login failed");
-      }
+      const { data } = await axios.post(
+        "http://localhost:3000/api/buyer/login",
+        {
+          contact,
+          password,
+        }
+      );
 
       setBuyer(data.buyer);
       localStorage.setItem("buyer", JSON.stringify(data.buyer));
       return data.buyer;
     } catch (error) {
-      console.error("Login error:", error);
-      throw error;
+      console.error(
+        "Buyer login error:",
+        error.response?.data || error.message
+      );
+      throw new Error(error.response?.data?.error || "Login failed");
     }
   };
 
   const buyerSignup = async (userData) => {
     try {
-      const response = await fetch("http://localhost:3000/api/buyer/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Signup failed");
-      }
-
+      const { data } = await axios.post(
+        "http://localhost:3000/api/buyer/signup",
+        userData
+      );
       return data;
     } catch (error) {
-      console.error("Signup error:", error);
-      throw error;
+      console.error(
+        "Buyer signup error:",
+        error.response?.data || error.message
+      );
+      throw new Error(error.response?.data?.error || "Signup failed");
     }
   };
 
   const adminLogin = async (email, password) => {
     try {
-      const response = await fetch("http://localhost:3000/api/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Login failed");
-      }
+      const { data } = await axios.post(
+        "http://localhost:3000/api/admin/login",
+        {
+          email,
+          password,
+        }
+      );
 
       setAdmin(data.admin);
       localStorage.setItem("admin", JSON.stringify(data.admin));
       return data.admin;
     } catch (error) {
-      console.error("Admin login error:", error);
-      throw error;
+      console.error(
+        "Admin login error:",
+        error.response?.data || error.message
+      );
+      throw new Error(error.response?.data?.error || "Login failed");
     }
   };
 
   const adminSignup = async (userData) => {
     try {
-      const response = await fetch("http://localhost:3000/api/admin/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Signup failed");
-      }
-
+      const { data } = await axios.post(
+        "http://localhost:3000/api/admin/signup",
+        userData
+      );
       return data;
     } catch (error) {
-      console.error("Admin signup error:", error);
-      throw error;
+      console.error(
+        "Admin signup error:",
+        error.response?.data || error.message
+      );
+      throw new Error(error.response?.data?.error || "Signup failed");
     }
   };
 
@@ -141,4 +122,8 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+function useAuth() {
+  return useContext(AuthContext);
+}
+
+export { useAuth };
