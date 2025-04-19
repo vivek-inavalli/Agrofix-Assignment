@@ -11,10 +11,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const savedBuyer = localStorage.getItem("buyer");
     const savedAdmin = localStorage.getItem("admin");
-
     if (savedBuyer) setBuyer(JSON.parse(savedBuyer));
     if (savedAdmin) setAdmin(JSON.parse(savedAdmin));
-
     setLoading(false);
   }, []);
 
@@ -22,14 +20,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await axios.post(
         "http://localhost:3000/api/buyer/login",
-        {
-          contact,
-          password,
-        }
+        { contact, password }
       );
 
-      setBuyer(data.buyer);
+      // Save token and buyer data in localStorage
+      localStorage.setItem("token", data.token);
       localStorage.setItem("buyer", JSON.stringify(data.buyer));
+      setBuyer(data.buyer);
+
       return data.buyer;
     } catch (error) {
       console.error(
@@ -41,57 +39,29 @@ export const AuthProvider = ({ children }) => {
   };
 
   const buyerSignup = async (userData) => {
-    try {
-      const { data } = await axios.post(
-        "http://localhost:3000/api/buyer/signup",
-        userData
-      );
-      return data;
-    } catch (error) {
-      console.error(
-        "Buyer signup error:",
-        error.response?.data || error.message
-      );
-      throw new Error(error.response?.data?.error || "Signup failed");
-    }
+    const { data } = await axios.post(
+      "http://localhost:3000/api/buyer/signup",
+      userData
+    );
+    return data;
   };
 
   const adminLogin = async (email, password) => {
-    try {
-      const { data } = await axios.post(
-        "http://localhost:3000/api/admin/login",
-        {
-          email,
-          password,
-        }
-      );
-
-      setAdmin(data.admin);
-      localStorage.setItem("admin", JSON.stringify(data.admin));
-      return data.admin;
-    } catch (error) {
-      console.error(
-        "Admin login error:",
-        error.response?.data || error.message
-      );
-      throw new Error(error.response?.data?.error || "Login failed");
-    }
+    const { data } = await axios.post("http://localhost:3000/api/admin/login", {
+      email,
+      password,
+    });
+    setAdmin(data.admin);
+    localStorage.setItem("admin", JSON.stringify(data.admin));
+    return data.admin;
   };
 
   const adminSignup = async (userData) => {
-    try {
-      const { data } = await axios.post(
-        "http://localhost:3000/api/admin/signup",
-        userData
-      );
-      return data;
-    } catch (error) {
-      console.error(
-        "Admin signup error:",
-        error.response?.data || error.message
-      );
-      throw new Error(error.response?.data?.error || "Signup failed");
-    }
+    const { data } = await axios.post(
+      "http://localhost:3000/api/admin/signup",
+      userData
+    );
+    return data;
   };
 
   const logout = () => {
@@ -122,8 +92,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-function useAuth() {
-  return useContext(AuthContext);
-}
-
-export { useAuth };
+export const useAuth = () => useContext(AuthContext);

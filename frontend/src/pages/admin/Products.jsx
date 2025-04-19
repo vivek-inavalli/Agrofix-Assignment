@@ -15,7 +15,7 @@ const AdminProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("/api/products");
+        const response = await axios.get("http://localhost:3000/api/products");
         setProducts(response.data);
       } catch (err) {
         setError("Failed to fetch products.");
@@ -36,7 +36,10 @@ const AdminProducts = () => {
     setSuccess(null);
 
     try {
-      const response = await axios.post("/api/products", formData);
+      const response = await axios.post(
+        "http://localhost:3000/api/products",
+        formData
+      );
       setProducts((prev) => [...prev, response.data]);
       setSuccess("Product added successfully!");
       setFormData({ name: "", price: "", type: "", imgUrl: "" });
@@ -47,7 +50,7 @@ const AdminProducts = () => {
 
   const handleDeleteProduct = async (id) => {
     try {
-      await axios.delete(`/api/products/${id}`);
+      await axios.delete(`http://localhost:3000/api/products/${id}`);
       setProducts((prev) => prev.filter((product) => product.id !== id));
       setSuccess("Product deleted successfully!");
     } catch (err) {

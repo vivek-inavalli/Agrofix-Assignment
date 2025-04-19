@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../contexts/CartContext";
 import { useAuth } from "../contexts/AuthContext";
+import axios from "axios";
 
 const Checkout = () => {
   const { cart, cartTotal, clearCart } = useCart();
@@ -37,25 +38,21 @@ const Checkout = () => {
         price: item.price,
       }));
 
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        "http://localhost:3000/api/orders",
+        {
           buyerId: buyer.id,
           items: orderItems,
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to create order");
-      }
-
-      const data = await response.json();
       clearCart();
-      navigate("/order-success", { state: { orderId: data.id } });
+      navigate("/order-success", { state: { orderId: response.data.id } });
     } catch (err) {
       setError(err.message);
     } finally {

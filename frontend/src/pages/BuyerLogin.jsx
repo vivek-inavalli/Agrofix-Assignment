@@ -16,15 +16,12 @@ const BuyerLogin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!contact || !password) {
       setError("Both fields are required.");
       return;
     }
-
     setLoading(true);
     setError(null);
-
     try {
       await buyerLogin(contact, password);
       navigate(redirectPath);
@@ -38,13 +35,11 @@ const BuyerLogin = () => {
   return (
     <div className="max-w-md mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center">Buyer Login</h1>
-
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
           <p>{error}</p>
         </div>
       )}
-
       <div className="bg-white rounded-lg shadow-md p-6">
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -58,7 +53,6 @@ const BuyerLogin = () => {
               required
             />
           </div>
-
           <div className="mb-6">
             <label className="block text-gray-700 mb-2">Password</label>
             <input
@@ -70,7 +64,6 @@ const BuyerLogin = () => {
               required
             />
           </div>
-
           <button
             type="submit"
             disabled={loading}
@@ -80,7 +73,6 @@ const BuyerLogin = () => {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
-
           <p className="text-center text-gray-600">
             Don't have an account?{" "}
             <Link to="/buyer/signup" className="text-blue-600 hover:underline">

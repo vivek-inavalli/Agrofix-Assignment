@@ -6,7 +6,7 @@ const cors = require("cors");
 const app = express();
 const prisma = new PrismaClient();
 const jwt = require("jsonwebtoken");
-
+require("dotenv").config();
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -43,7 +43,7 @@ app.put("/api/products/:id", async (req, res) => {
   res.json(product);
 });
 
-// DELETE /api/products/:id (Admin)
+// DELETE /api/products/:id (Admin)/
 app.delete("/api/products/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -55,19 +55,38 @@ app.delete("/api/products/:id", async (req, res) => {
 
 // POST /api/orders
 app.post("/api/orders", async (req, res) => {
-  const { buyerId, items } = req.body;
-  if (!buyerId || !items)
-    return res.status(400).json({ error: "Missing order details." });
+  try {
+    const { buyerId, items } = req.body;
+    if (!buyerId || !items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: "Missing order details." });
+    }
 
-  const order = await prisma.order.create({
-    data: {
-      buyerId,
-      items,
-      status: "PENDING",
-    },
-  });
+    const order = await prisma.order.create({
+      data: {
+        buyerId,
+        status: "PENDING",
+      },
+    });
 
-  res.status(201).json(order);
+    const orderItems = await prisma.orderItem.createMany({
+      data: items.map((item) => ({
+        orderId: order.id,
+        productId: item.productId,
+        quantity: item.quantity,
+        price: item.price,
+      })),
+    });
+
+    res.status(201).json({
+      order,
+      orderItems,
+    });
+  } catch (error) {
+    console.error("Error creating order:", error); // More detailed error logging
+    res
+      .status(500)
+      .json({ error: "Internal server error", details: error.message });
+  }
 });
 
 // GET /api/orders/:id (Buyer)
@@ -101,12 +120,17 @@ app.put("/api/orders/:id", async (req, res) => {
     return res.status(400).json({ error: "Invalid status." });
   }
 
-  const order = await prisma.order.update({
-    where: { id: Number(id) },
-    data: { status },
-  });
+  try {
+    const order = await prisma.order.update({
+      where: { id: id },
+      data: { status },
+    });
 
-  res.json(order);
+    res.json(order);
+  } catch (err) {
+    console.error("Error updating order:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
 });
 
 app.post("/api/buyer/signup", async (req, res) => {
@@ -239,7 +263,7 @@ app.get("/api/buyer/profile", async (req, res) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const buyer = await prisma.buyer.findUnique({
       where: { id: decoded.id },

@@ -22,12 +22,7 @@ const Navbar = () => {
             Agrofix
           </Link>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/products" className="hover:text-gray-300">
-              Products
-            </Link>
-
             {isAdmin ? (
               <>
                 <Link to="/admin/dashboard" className="hover:text-gray-300">
@@ -53,6 +48,9 @@ const Navbar = () => {
 
             {isBuyer && (
               <>
+                <Link to="/products" className="hover:text-gray-300">
+                  Products
+                </Link>
                 <Link to="/buyer/orders" className="hover:text-gray-300">
                   My Orders
                 </Link>

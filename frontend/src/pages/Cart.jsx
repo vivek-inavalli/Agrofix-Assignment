@@ -61,7 +61,7 @@ const Cart = () => {
                     </div>
                   </div>
                 </td>
-                <td className="p-4">${item.price.toFixed(2)}</td>
+                <td className="p-4">${Number(item.price).toFixed(2)}</td>
                 <td className="p-4">
                   <div className="flex items-center justify-center">
                     <button

@@ -8,7 +8,7 @@ const BuyerProfile = () => {
   useEffect(() => {
     const fetchBuyerProfile = async () => {
       try {
-        const token = localStorage.getItem("buyer");
+        const token = localStorage.getItem("token");
 
         if (!token) {
           setError("Please log in to view your profile.");
@@ -30,8 +30,16 @@ const BuyerProfile = () => {
           setError("Failed to fetch profile.");
         }
       } catch (err) {
-        setError("Failed to fetch profile. Please try again.");
-        console.log(err);
+        if (err.response && err.response.status === 401) {
+          setError("Unauthorized: Please log in again.");
+          localStorage.removeItem("buyer"); // Clear invalid token
+        } else if (err.response && err.response.status === 400) {
+          setError("Invalid token. Please log in again.");
+          localStorage.removeItem("buyer");
+        } else {
+          setError("Failed to fetch profile. Please try again.");
+        }
+        console.error("Error fetching profile:", err);
       }
     };
 

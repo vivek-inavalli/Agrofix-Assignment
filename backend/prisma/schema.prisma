@@ -13,6 +13,7 @@ model Product {
   price  Decimal  @db.Decimal(10, 2)
   type   String
   imgUrl String
+  orderItems OrderItem[]
 }
 
 model Buyer {
@@ -27,9 +28,8 @@ model Buyer {
 model Order {
   id         String      @id @default(uuid())
   buyerId    String
-  productId  String
   buyer      Buyer       @relation(fields: [buyerId], references: [id])
-  items      Json
+  orderItems OrderItem[]
   status     OrderStatus @default(PENDING)
   createdAt  DateTime    @default(now())
   updatedAt  DateTime    @updatedAt
@@ -42,6 +42,16 @@ model Admin {
   password String
 }
 
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity Int
+  price     Decimal  @db.Decimal(10, 2)
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
 
 enum OrderStatus {
   PENDING

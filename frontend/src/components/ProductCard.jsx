@@ -15,7 +15,7 @@ const ProductCard = ({ product }) => {
         <h3 className="font-bold text-lg mb-2">{product.name}</h3>
         <p className="text-gray-700">{product.type}</p>
         <p className="text-blue-600 font-bold mt-2">
-          ${product.price.toFixed(2)}
+          ${Number(product.price).toFixed(2)}
         </p>
 
         <div className="mt-4 flex space-x-2">

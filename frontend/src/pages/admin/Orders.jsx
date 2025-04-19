@@ -9,7 +9,7 @@ const AdminOrders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("/api/orders");
+        const response = await axios.get("http://localhost:3000/api/orders");
         setOrders(response.data);
       } catch (err) {
         setError("Failed to fetch orders.");
@@ -21,7 +21,7 @@ const AdminOrders = () => {
 
   const handleUpdateStatus = async (id, status) => {
     try {
-      await axios.put(`/api/orders/${id}`, { status });
+      await axios.put(`http://localhost:3000/api/orders/${id}`, { status });
       setOrders((prev) =>
         prev.map((order) => (order.id === id ? { ...order, status } : order))
       );

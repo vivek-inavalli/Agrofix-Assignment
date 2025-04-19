@@ -17,6 +17,9 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get("http://localhost:3000/api/products");
+
+        console.log("Fetched Products:", response.data);
+
         const foundProduct = response.data.find((p) => p.id === Number(id));
 
         if (foundProduct) {
@@ -27,6 +30,7 @@ const ProductDetail = () => {
 
         setLoading(false);
       } catch (err) {
+        console.error("Error fetching product:", err);
         setError(err.message);
         setLoading(false);
       }
@@ -43,8 +47,10 @@ const ProductDetail = () => {
   };
 
   const handleAddToCart = () => {
-    addToCart(product, quantity);
-    navigate("/cart");
+    if (product) {
+      addToCart(product, quantity);
+      navigate("/cart");
+    }
   };
 
   if (loading) {
