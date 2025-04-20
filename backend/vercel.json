@@ -11,10 +11,5 @@
       "src": "/api/(.*)",
       "dest": "index.js"
     }
-  ],
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "PORT": "@port",
-    "JWT_SECRET": "@jwt_secret"
-  }
+  ]
 }
