@@ -16,7 +16,7 @@ const BuyerProfile = () => {
         }
 
         const response = await axios.get(
-          "http://localhost:3000/api/buyer/profile",
+          `${import.meta.env.VITE_BACKEND_URL}api/buyer/profile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

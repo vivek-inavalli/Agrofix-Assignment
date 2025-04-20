@@ -15,7 +15,7 @@ const OrderDetail = () => {
     const fetchOrder = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3000/api/orders/${id}`
+          `${import.meta.env.VITE_BACKEND_URL}api/orders/${id}`
         );
         setOrder(response.data);
         setLoading(false);

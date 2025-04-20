@@ -16,7 +16,9 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products");
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}api/products`
+        );
         if (response.data.length === 0) {
           setError("No products are available.");
         } else {

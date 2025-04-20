@@ -19,11 +19,10 @@ export const AuthProvider = ({ children }) => {
   const buyerLogin = async (contact, password) => {
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/api/buyer/login",
+        `${import.meta.env.VITE_BACKEND_URL}api/buyer/login`,
         { contact, password }
       );
 
-      // Save token and buyer data in localStorage
       localStorage.setItem("token", data.token);
       localStorage.setItem("buyer", JSON.stringify(data.buyer));
       setBuyer(data.buyer);
@@ -40,17 +39,20 @@ export const AuthProvider = ({ children }) => {
 
   const buyerSignup = async (userData) => {
     const { data } = await axios.post(
-      "http://localhost:3000/api/buyer/signup",
+      `${import.meta.env.VITE_BACKEND_URL}api/buyer/signup`,
       userData
     );
     return data;
   };
 
   const adminLogin = async (email, password) => {
-    const { data } = await axios.post("http://localhost:3000/api/admin/login", {
-      email,
-      password,
-    });
+    const { data } = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}api/admin/login`,
+      {
+        email,
+        password,
+      }
+    );
     setAdmin(data.admin);
     localStorage.setItem("admin", JSON.stringify(data.admin));
     return data.admin;
@@ -58,7 +60,7 @@ export const AuthProvider = ({ children }) => {
 
   const adminSignup = async (userData) => {
     const { data } = await axios.post(
-      "http://localhost:3000/api/admin/signup",
+      `${import.meta.env.VITE_BACKEND_URL}api/admin/signup`,
       userData
     );
     return data;

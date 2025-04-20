@@ -8,7 +8,9 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/orders");
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}api/orders`
+        );
         setOrders(response.data);
       } catch (err) {
         setError("Failed to fetch orders.");

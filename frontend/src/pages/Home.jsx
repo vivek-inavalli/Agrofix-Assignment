@@ -11,7 +11,9 @@ const Home = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products");
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}api/products`
+        );
         const shuffled = response.data.sort(() => 0.5 - Math.random());
         setFeaturedProducts(shuffled.slice(0, 4));
         setLoading(false);

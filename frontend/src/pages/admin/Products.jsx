@@ -15,7 +15,9 @@ const AdminProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/products");
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}api/products`
+        );
         setProducts(response.data);
       } catch (err) {
         setError("Failed to fetch products.");
@@ -37,7 +39,7 @@ const AdminProducts = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/products",
+        `${import.meta.env.VITE_BACKEND_URL}api/products`,
         formData
       );
       setProducts((prev) => [...prev, response.data]);
@@ -50,7 +52,9 @@ const AdminProducts = () => {
 
   const handleDeleteProduct = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/api/products/${id}`);
+      await axios.delete(
+        `${import.meta.env.VITE_BACKEND_URL}api/products/${id}`
+      );
       setProducts((prev) => prev.filter((product) => product.id !== id));
       setSuccess("Product deleted successfully!");
     } catch (err) {

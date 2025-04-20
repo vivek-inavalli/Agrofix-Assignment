@@ -39,7 +39,7 @@ const Checkout = () => {
       }));
 
       const response = await axios.post(
-        "http://localhost:3000/api/orders",
+        `${import.meta.env.VITE_BACKEND_URL}api/orders`,
         {
           buyerId: buyer.id,
           items: orderItems,
