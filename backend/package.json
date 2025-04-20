@@ -4,9 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js",
-    "build": "prisma generate",
-    "postbuild": "mkdir -p public && echo '<!DOCTYPE html><html><body>API Running</body></html>' > public/index.html"
+    "dev": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
