@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "build": "prisma generate && netlify-lambda build netlify/functions"
+    "build": "prisma generate",
+    "postbuild": "mkdir -p public && echo '<!DOCTYPE html><html><body>API Running</body></html>' > public/index.html"
   },
   "keywords": [],
   "author": "",
