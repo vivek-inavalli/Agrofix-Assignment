@@ -286,5 +286,9 @@ app.get("/api/buyer/profile", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("welcome to backend ");
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
