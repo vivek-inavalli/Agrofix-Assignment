@@ -27,7 +27,7 @@ Follow these steps to set up and run the backend:
 4. Generate Prisma client:
 
    ```bash
-   npx prisma generate
+   npx prisma generate dev --name database
    ```
 
 5. Start the development server:
